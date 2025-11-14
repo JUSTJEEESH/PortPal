@@ -89,6 +89,7 @@ struct EditTimerSheet: View {
                             port: selectedPort,
                             berth: selectedBerth,
                             departure: departureTime,
+                            embarkationDate: timer.embarkationDate,
                             weather: timer.weather,
                             itinerary: timer.itinerary
                         )
@@ -102,3 +103,4 @@ struct EditTimerSheet: View {
         }
     }
 }
+

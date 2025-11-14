@@ -5,6 +5,7 @@ struct HomeTab: View {
     @State private var showSettings = false
     @State private var activeTimerIndex = 0
     @AppStorage("showWeather") var showWeather = true
+    @AppStorage("useRealShipData") var useRealShipData = false
     
     var body: some View {
         ZStack {
@@ -146,6 +147,8 @@ struct HomeTab: View {
                         
                         ScrollView {
                             VStack(alignment: .leading, spacing: 24) {
+                                LiveDataToggle()
+                                Divider()
                                 TemperatureToggle()
                                 Divider()
                                 NotificationsSection()
@@ -167,6 +170,60 @@ struct HomeTab: View {
 }
 
 // MARK: - Settings Components
+
+struct LiveDataToggle: View {
+    @AppStorage("useRealShipData") var useRealShipData = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("TRACKING MODE")
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+                    .tracking(1.2)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(useRealShipData ? Color.green : Color.orange)
+                        .frame(width: 8, height: 8)
+                    
+                    Text(useRealShipData ? "LIVE" : "TEST")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(useRealShipData ? .green : .orange)
+                }
+            }
+            
+            Toggle("Use Real Ship Data (Position API)", isOn: $useRealShipData)
+                .font(.system(size: 15, weight: .regular, design: .default))
+            
+            if useRealShipData {
+                HStack(spacing: 8) {
+                    Image(systemName: "antenna.radiowaves.left.and.right")
+                        .font(.system(size: 12))
+                        .foregroundColor(.green)
+                    
+                    Text("Live AIS tracking active")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 4)
+            } else {
+                HStack(spacing: 8) {
+                    Image(systemName: "flask.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(.orange)
+                    
+                    Text("Using simulated data")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 4)
+            }
+        }
+    }
+}
 
 struct TemperatureToggle: View {
     @AppStorage("temperatureUnit") var temperatureUnit = "fahrenheit"

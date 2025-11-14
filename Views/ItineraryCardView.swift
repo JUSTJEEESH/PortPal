@@ -71,9 +71,9 @@ struct ItineraryCardView: View {
                                 isCurrent: item.isCurrent
                             )
                         } else if item.type == "atsea" {
-                            AtSeaView(days: item.daysAtSea)
+                            AtSeaView(days: item.daysAtSea, isCurrent: item.isCurrent)
                         } else if item.type == "overnight" {
-                            OvernightView()
+                            OvernightView(isCurrent: item.isCurrent)
                         }
                     }
                 }
@@ -122,37 +122,74 @@ struct ItineraryCardView: View {
         var previousDayNumber: Int? = nil
         var processedPorts: Set<String> = []
         
+        // Calculate embark date from the timer
+        var embarkDate = timer.departure
+        for stop in timer.itinerary {
+            if stop.status == "Embarkation" {
+                let dayNum = extractDayNumber(from: stop.date)
+                let timerDayNum = extractDayNumber(from: timer.itinerary.first { $0.port == timer.port && $0.status == "Departure" }?.date ?? "Day 0")
+                let dayDiff = timerDayNum - dayNum
+                
+                if let calcEmbark = Calendar.current.date(byAdding: .day, value: -dayDiff, to: timer.departure) {
+                    embarkDate = calcEmbark
+                }
+                break
+            }
+        }
+        
+        let now = Date()
+        
         for (index, stop) in timer.itinerary.enumerated() {
             let currentDay = extractDayNumber(from: stop.date)
+            let stopDate = calculateStopDate(stop: stop, baseDate: embarkDate)
             
             if stop.status == "Embarkation" {
                 result.append(("port", stop.port, "", stop.time, stop.date, 0, true, false, false))
                 previousDayNumber = currentDay
                 processedPorts.insert(stop.port + stop.date)
                 
-            } else if stop.status == "Arrival" {
+            } else if stop.status == "Arrival" || stop.status == "Current" {
                 // Calculate days at sea
                 if let prevDay = previousDayNumber {
                     let daysAtSea = currentDay - prevDay
+                    
+                    // Check if we're currently "at sea" between the previous port and this one
+                    let prevPortDeparted = checkIfDepartedPreviousPort(currentIndex: index, now: now, baseDate: embarkDate)
+                    let notYetArrived = now < stopDate
+                    let isAtSeaBetween = prevPortDeparted && notYetArrived
+                    
                     if daysAtSea > 1 {
-                        result.append(("atsea", "", "", "", "", daysAtSea - 1, false, false, false))
+                        result.append(("atsea", "", "", "", "", daysAtSea - 1, false, false, isAtSeaBetween))
                     } else if daysAtSea == 1 {
-                        result.append(("overnight", "", "", "", "", 0, false, false, false))
+                        result.append(("overnight", "", "", "", "", 0, false, false, isAtSeaBetween))
                     }
                 }
                 
                 // Find matching departure
                 var departTime = ""
+                var departureDate: Date?
                 if index + 1 < timer.itinerary.count {
                     let nextStop = timer.itinerary[index + 1]
                     if nextStop.port == stop.port && nextStop.status == "Departure" {
                         departTime = nextStop.time
+                        departureDate = calculateStopDate(stop: nextStop, baseDate: embarkDate)
                     }
                 }
                 
                 let portKey = stop.port + stop.date
                 if !processedPorts.contains(portKey) {
-                    result.append(("port", stop.port, stop.time, departTime, stop.date, 0, false, false, stop.status == "Current"))
+                    // Determine if this is the current port
+                    let arrivalDate = stopDate
+                    let isCurrent: Bool
+                    
+                    if let depDate = departureDate {
+                        // We're at this port if NOW is between arrival and departure
+                        isCurrent = now >= arrivalDate && now < depDate
+                    } else {
+                        isCurrent = (stop.status == "Current")
+                    }
+                    
+                    result.append(("port", stop.port, stop.time, departTime, stop.date, 0, false, false, isCurrent))
                     processedPorts.insert(portKey)
                 }
                 
@@ -162,10 +199,15 @@ struct ItineraryCardView: View {
                 // Calculate days at sea before return
                 if let prevDay = previousDayNumber {
                     let daysAtSea = currentDay - prevDay
+                    
+                    let prevPortDeparted = checkIfDepartedPreviousPort(currentIndex: index, now: now, baseDate: embarkDate)
+                    let notYetArrived = now < stopDate
+                    let isAtSeaBetween = prevPortDeparted && notYetArrived
+                    
                     if daysAtSea > 1 {
-                        result.append(("atsea", "", "", "", "", daysAtSea - 1, false, false, false))
+                        result.append(("atsea", "", "", "", "", daysAtSea - 1, false, false, isAtSeaBetween))
                     } else if daysAtSea == 1 {
-                        result.append(("overnight", "", "", "", "", 0, false, false, false))
+                        result.append(("overnight", "", "", "", "", 0, false, false, isAtSeaBetween))
                     }
                 }
                 
@@ -174,6 +216,32 @@ struct ItineraryCardView: View {
         }
         
         return result
+    }
+    
+    private func checkIfDepartedPreviousPort(currentIndex: Int, now: Date, baseDate: Date) -> Bool {
+        // Look backwards to find the previous departure
+        for i in stride(from: currentIndex - 1, through: 0, by: -1) {
+            let prevStop = timer.itinerary[i]
+            if prevStop.status == "Departure" || prevStop.status == "Embarkation" {
+                let prevDepartureDate = calculateStopDate(stop: prevStop, baseDate: baseDate)
+                return now >= prevDepartureDate
+            }
+        }
+        return false
+    }
+    
+    private func calculateStopDate(stop: PortStop, baseDate: Date) -> Date {
+        let dayNumber = extractDayNumber(from: stop.date)
+        let timeComponents = stop.time.split(separator: ":").compactMap { Int($0) }
+        let hour = timeComponents.count > 0 ? timeComponents[0] : 0
+        let minute = timeComponents.count > 1 ? timeComponents[1] : 0
+        
+        var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: baseDate)
+        dateComponents.day! += dayNumber
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        
+        return Calendar.current.date(from: dateComponents) ?? baseDate
     }
 }
 
@@ -344,6 +412,7 @@ struct FlightyPortStopView: View {
 // MARK: - At Sea View (Multiple Days)
 struct AtSeaView: View {
     let days: Int
+    let isCurrent: Bool
     
     var body: some View {
         HStack(spacing: 0) {
@@ -363,7 +432,7 @@ struct AtSeaView: View {
                 Text("⚓︎")
                     .font(.system(size: 12))
             }
-            .foregroundColor(.secondary)
+            .foregroundColor(isCurrent ? .blue : .secondary)
             .padding(.horizontal, 8)
             .fixedSize()
             
@@ -374,11 +443,15 @@ struct AtSeaView: View {
                 .frame(height: 1)
         }
         .padding(.vertical, 12)
+        .background(isCurrent ? Color.blue.opacity(0.08) : Color.clear)
+        .cornerRadius(8)
     }
 }
 
 // MARK: - Overnight View (One Night at Sea)
 struct OvernightView: View {
+    let isCurrent: Bool
+    
     var body: some View {
         HStack(spacing: 0) {
             // Left dashed line
@@ -391,11 +464,11 @@ struct OvernightView: View {
             HStack(spacing: 4) {
                 Image(systemName: "moon.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(isCurrent ? .blue : .secondary)
                 Text("Overnight at sea")
                     .font(.system(size: 10, weight: .semibold, design: .default))
                     .tracking(0.3)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(isCurrent ? .blue : .secondary)
             }
             .padding(.horizontal, 8)
             .fixedSize()
@@ -407,6 +480,8 @@ struct OvernightView: View {
                 .frame(height: 1)
         }
         .padding(.vertical, 12)
+        .background(isCurrent ? Color.blue.opacity(0.08) : Color.clear)
+        .cornerRadius(8)
     }
 }
 
