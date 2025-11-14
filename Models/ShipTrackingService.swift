@@ -13,10 +13,10 @@ class ShipTrackingService: ObservableObject {
     private var trackingTimer: Timer?
     private var timeoutTimer: Timer?
     private var hasReceivedData = false
-    
-    // AISStream.io API key
-    private let apiKey = "ab02bcdf98a2c1568f8a5abefb2851bc3b889477"
-    
+
+    // AISStream.io API key (loaded from secure Config)
+    private let apiKey = Config.aisStreamAPIKey
+
     private var currentMMSI: String = ""
     
     // Start tracking a ship via WebSocket

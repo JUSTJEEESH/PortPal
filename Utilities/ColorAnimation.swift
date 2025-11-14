@@ -3,11 +3,38 @@ import Foundation
 
 struct AnimatedOceanGradient: View {
     @Environment(\.colorScheme) var colorScheme
-    
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+
     var body: some View {
+        Group {
+            if reduceMotion {
+                // Static gradient when Reduce Motion is enabled
+                staticGradient
+            } else {
+                // Animated gradient when motion is allowed
+                animatedGradient
+            }
+        }
+    }
+
+    private var staticGradient: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    getBaseColor1(time: 0),
+                    getBaseColor2(time: 0),
+                    getBaseColor3(time: 0)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+
+    private var animatedGradient: some View {
         TimelineView(.animation(minimumInterval: 0.016)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
-            
+
             ZStack {
                 // Layer 1 - Base ocean gradient with subtle color cycling
                 LinearGradient(
@@ -19,7 +46,7 @@ struct AnimatedOceanGradient: View {
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
-                
+
                 // Layer 2 - Overlay with different timing
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -31,7 +58,7 @@ struct AnimatedOceanGradient: View {
                     endPoint: .bottom
                 )
                 .opacity(0.5)
-                
+
                 // Layer 3 - Moving radial gradient
                 RadialGradient(
                     gradient: Gradient(colors: [

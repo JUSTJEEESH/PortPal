@@ -261,30 +261,70 @@ struct TemperatureToggle: View {
 }
 
 struct NotificationsSection: View {
+    @EnvironmentObject var timerManager: TimerManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @AppStorage("alert60") var alert60 = true
     @AppStorage("alert30") var alert30 = true
     @AppStorage("alert15") var alert15 = true
     @AppStorage("alert5") var alert5 = true
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("NOTIFICATIONS")
-                .font(.system(size: 11, weight: .semibold, design: .default))
-                .tracking(1.2)
-                .foregroundColor(.secondary)
-            
+            HStack {
+                Text("NOTIFICATIONS")
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+                    .tracking(1.2)
+                    .foregroundColor(.secondary)
+
+                Spacer()
+
+                // Show authorization status
+                if notificationManager.authorizationStatus == .notDetermined {
+                    Button("Enable") {
+                        Task {
+                            _ = await notificationManager.requestAuthorization()
+                            await timerManager.rescheduleAllNotifications()
+                        }
+                    }
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.blue)
+                } else if notificationManager.authorizationStatus == .denied {
+                    Text("Disabled in Settings")
+                        .font(.system(size: 10, weight: .regular))
+                        .foregroundColor(.red)
+                }
+            }
+
             VStack(spacing: 8) {
                 Toggle("60 min before departure", isOn: $alert60)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                
+                    .onChange(of: alert60) { _ in
+                        Task { await timerManager.rescheduleAllNotifications() }
+                    }
+
                 Toggle("30 min before departure", isOn: $alert30)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                
+                    .onChange(of: alert30) { _ in
+                        Task { await timerManager.rescheduleAllNotifications() }
+                    }
+
                 Toggle("15 min before departure", isOn: $alert15)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                
+                    .onChange(of: alert15) { _ in
+                        Task { await timerManager.rescheduleAllNotifications() }
+                    }
+
                 Toggle("5 min before departure", isOn: $alert5)
                     .font(.system(size: 15, weight: .regular, design: .default))
+                    .onChange(of: alert5) { _ in
+                        Task { await timerManager.rescheduleAllNotifications() }
+                    }
+            }
+        }
+        .task {
+            // Request authorization on first appearance
+            if notificationManager.authorizationStatus == .notDetermined {
+                _ = await notificationManager.requestAuthorization()
             }
         }
     }
