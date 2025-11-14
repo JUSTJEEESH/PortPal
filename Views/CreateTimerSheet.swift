@@ -72,8 +72,8 @@ struct CreateTimerSheet: View {
                     if let _ = selectedItinerary {
                         Section(header: Text("Cruise Status")) {
                             Toggle("This cruise is already in progress", isOn: $isOngoingCruise)
-                                .onChange(of: isOngoingCruise) { newValue in
-                                    if !newValue {
+                                .onChange(of: isOngoingCruise) {
+                                    if !isOngoingCruise {
                                         selectedCurrentPort = nil
                                     }
                                 }

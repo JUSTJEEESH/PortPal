@@ -298,25 +298,25 @@ struct NotificationsSection: View {
             VStack(spacing: 8) {
                 Toggle("60 min before departure", isOn: $alert60)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                    .onChange(of: alert60) { _ in
+                    .onChange(of: alert60) {
                         Task { await timerManager.rescheduleAllNotifications() }
                     }
 
                 Toggle("30 min before departure", isOn: $alert30)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                    .onChange(of: alert30) { _ in
+                    .onChange(of: alert30) {
                         Task { await timerManager.rescheduleAllNotifications() }
                     }
 
                 Toggle("15 min before departure", isOn: $alert15)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                    .onChange(of: alert15) { _ in
+                    .onChange(of: alert15) {
                         Task { await timerManager.rescheduleAllNotifications() }
                     }
 
                 Toggle("5 min before departure", isOn: $alert5)
                     .font(.system(size: 15, weight: .regular, design: .default))
-                    .onChange(of: alert5) { _ in
+                    .onChange(of: alert5) {
                         Task { await timerManager.rescheduleAllNotifications() }
                     }
             }

@@ -163,9 +163,9 @@ struct CountdownRingView: View {
         .onDisappear {
             stateManager.stopMonitoring()
         }
-        .onChange(of: useRealShipData) { newValue in
-            stateManager.useRealShipData = newValue
-            stateManager.isTestMode = !newValue
+        .onChange(of: useRealShipData) {
+            stateManager.useRealShipData = useRealShipData
+            stateManager.isTestMode = !useRealShipData
             stateManager.stopMonitoring()
             stateManager.startMonitoring(for: timer)
         }

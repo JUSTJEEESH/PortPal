@@ -127,7 +127,10 @@ struct AccessibilityHelper {
     /// Get current Dynamic Type size category
     static var sizeCategory: ContentSizeCategory {
         #if canImport(UIKit)
-        return ContentSizeCategory(UIApplication.shared.preferredContentSizeCategory) ?? .medium
+        if let category = ContentSizeCategory(UIApplication.shared.preferredContentSizeCategory) {
+            return category
+        }
+        return .medium
         #else
         return .medium
         #endif
