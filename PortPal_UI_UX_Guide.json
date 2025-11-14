@@ -1,0 +1,870 @@
+{
+  "portpal_ui_ux_guide": {
+    "version": "2.0",
+    "last_updated": "2025-11-13",
+    "design_philosophy": {
+      "core_principles": [
+        "Native iOS aesthetics with modern iOS 18+ design language",
+        "Inspired by Flighty's award-winning UX patterns",
+        "Clean, sophisticated interface without excessive color or emojis",
+        "Urgency-based visual hierarchy using color psychology",
+        "Smooth, intuitive gestures with no interaction conflicts",
+        "Information density balanced with breathing room"
+      ],
+      "visual_identity": "Maritime sophistication meets modern iOS elegance"
+    },
+    
+    "color_system": {
+      "primary_colors": {
+        "navy_dark": {
+          "hex": "#0A1628",
+          "usage": "Primary background, headers, dark mode base",
+          "contexts": ["main_background", "navigation_bars", "card_backgrounds"]
+        },
+        "ocean_teal": {
+          "hex": "#00A5CF",
+          "usage": "Accent color, interactive elements, early arrival states",
+          "contexts": ["links", "buttons", "countdown_ring_safe"]
+        },
+        "caribbean_cyan": {
+          "hex": "#00D4AA",
+          "usage": "Success states, plenty of time indicators, positive actions",
+          "contexts": ["countdown_ring_early", "success_messages", "safe_timers"]
+        },
+        "sunshine_yellow": {
+          "hex": "#FFD54F",
+          "usage": "Warning states, getting close to departure",
+          "contexts": ["countdown_ring_warning", "alert_badges", "caution_indicators"]
+        },
+        "sunset_orange": {
+          "hex": "#FF6B35",
+          "usage": "Urgent states, leaving soon warnings",
+          "contexts": ["countdown_ring_urgent", "urgent_notifications"]
+        },
+        "coral_red": {
+          "hex": "#FF1744",
+          "usage": "Critical states, immediate action required, missed departure",
+          "contexts": ["countdown_ring_critical", "error_states", "missed_ship_alerts"]
+        },
+        "steel_gray": {
+          "hex": "#6B7280",
+          "usage": "Secondary text, disabled states, subtle UI elements",
+          "contexts": ["secondary_labels", "disabled_buttons", "dividers"]
+        },
+        "white": {
+          "hex": "#FFFFFF",
+          "usage": "Primary text on dark backgrounds, light mode base",
+          "contexts": ["primary_text", "card_text", "navigation_items"]
+        },
+        "hot_pink": {
+          "hex": "#E91E63",
+          "usage": "Premium cruise line accent (Disney, Celebrity)",
+          "contexts": ["cruise_line_branding", "special_badges"]
+        }
+      },
+      
+      "urgency_color_scale": {
+        "description": "Dynamic color system based on time remaining until port departure",
+        "stages": [
+          {
+            "name": "all_good",
+            "time_range": "7+ hours remaining",
+            "ring_color": "#00D4AA",
+            "text_color": "#00D4AA",
+            "state": "Relax and Enjoy",
+            "psychology": "Calming, reassuring, plenty of time"
+          },
+          {
+            "name": "stay_alert",
+            "time_range": "3-7 hours remaining",
+            "ring_color": "#FFD54F",
+            "text_color": "#FFD54F",
+            "state": "Stay Alert",
+            "psychology": "Awareness without panic, start winding down"
+          },
+          {
+            "name": "departing_soon",
+            "time_range": "1-3 hours remaining",
+            "ring_color": "#FF6B35",
+            "text_color": "#FF6B35",
+            "state": "Departing Soon",
+            "psychology": "Urgency, time to head back"
+          },
+          {
+            "name": "return_to_ship",
+            "time_range": "45 min - 1 hour remaining",
+            "ring_color": "#FF1744",
+            "text_color": "#FF1744",
+            "state": "Return to Ship NOW",
+            "psychology": "Critical urgency, immediate action required",
+            "special_effects": ["pulsing_animation", "haptic_alerts"]
+          },
+          {
+            "name": "missed_ship",
+            "time_range": "Past departure time",
+            "ring_color": "#6B7280",
+            "text_color": "#FF1744",
+            "state": "Ship Has Departed",
+            "psychology": "Alarm, emergency contact needed"
+          }
+        ]
+      },
+      
+      "gradient_backgrounds": {
+        "ocean_animated": {
+          "description": "Animated ocean gradient background with gentle wave motion",
+          "colors": ["#0A1628", "#1E3A5F", "#2A5298"],
+          "animation": "Slow vertical parallax with subtle color shifts",
+          "usage": "Main app background, behind all content"
+        },
+        "map_overlay": {
+          "description": "Caribbean/ocean map with ship route overlay",
+          "style": "Dark mode cartography with glowing route lines",
+          "route_color": "#FF1E8D",
+          "waypoint_color": "#00D4AA"
+        }
+      }
+    },
+    
+    "typography": {
+      "font_family": "SF Pro (System Default)",
+      "font_scales": {
+        "hero_timer": {
+          "size": 48,
+          "weight": "semibold",
+          "usage": "Countdown timer display",
+          "letter_spacing": -0.5
+        },
+        "large_title": {
+          "size": 34,
+          "weight": "bold",
+          "usage": "Screen titles, cruise names",
+          "letter_spacing": 0.37
+        },
+        "title_1": {
+          "size": 28,
+          "weight": "regular",
+          "usage": "Port names, section headers"
+        },
+        "title_2": {
+          "size": 22,
+          "weight": "semibold",
+          "usage": "Port arrival times, ship names"
+        },
+        "title_3": {
+          "size": 20,
+          "weight": "semibold",
+          "usage": "Subsection headers"
+        },
+        "headline": {
+          "size": 17,
+          "weight": "semibold",
+          "usage": "List item titles, card headers"
+        },
+        "body": {
+          "size": 17,
+          "weight": "regular",
+          "usage": "Primary content text"
+        },
+        "callout": {
+          "size": 16,
+          "weight": "regular",
+          "usage": "Secondary information"
+        },
+        "subheadline": {
+          "size": 15,
+          "weight": "regular",
+          "usage": "Supporting text"
+        },
+        "footnote": {
+          "size": 13,
+          "weight": "regular",
+          "usage": "Captions, tertiary text"
+        },
+        "caption_1": {
+          "size": 12,
+          "weight": "regular",
+          "usage": "Timestamps, distance labels"
+        },
+        "caption_2": {
+          "size": 11,
+          "weight": "regular",
+          "usage": "Fine print, legal text"
+        }
+      },
+      
+      "monospaced_timer": {
+        "description": "Monospaced digits for countdown timers to prevent layout shift",
+        "font": "SF Mono",
+        "usage": "All countdown displays",
+        "format": "HH:MM:SS with leading zeros"
+      }
+    },
+    
+    "spacing_system": {
+      "base_unit": 8,
+      "scale": {
+        "xxxs": 2,
+        "xxs": 4,
+        "xs": 8,
+        "sm": 12,
+        "md": 16,
+        "lg": 24,
+        "xl": 32,
+        "xxl": 48,
+        "xxxl": 64
+      },
+      "content_margins": {
+        "screen_horizontal": 20,
+        "card_internal": 16,
+        "list_item_vertical": 12,
+        "section_spacing": 24
+      }
+    },
+    
+    "components": {
+      "countdown_ring": {
+        "description": "Circular progress indicator showing time remaining until port departure",
+        "specifications": {
+          "diameter": {
+            "apple_watch": 140,
+            "iphone_widget": 120,
+            "iphone_main": 200
+          },
+          "stroke_width": 12,
+          "background_ring": "rgba(255, 255, 255, 0.1)",
+          "progress_ring": "Dynamic color based on urgency scale",
+          "cap_style": "round",
+          "animation": {
+            "type": "smooth_progress",
+            "duration": "1 second per tick",
+            "easing": "ease-in-out"
+          }
+        },
+        "center_content": {
+          "primary_display": "Time remaining (HH:MM:SS)",
+          "font": "SF Mono, 48pt semibold",
+          "color": "Matches ring color",
+          "secondary_label": "Port name below timer",
+          "tertiary_label": "State message (e.g., 'Relax and Enjoy')"
+        },
+        "states": [
+          {
+            "state": "all_good",
+            "ring_color": "#00D4AA",
+            "ring_percentage": "100% down to 30%",
+            "glow_effect": "Subtle green glow"
+          },
+          {
+            "state": "stay_alert",
+            "ring_color": "#FFD54F",
+            "ring_percentage": "30% down to 12.5%",
+            "glow_effect": "Subtle yellow glow"
+          },
+          {
+            "state": "departing_soon",
+            "ring_color": "#FF6B35",
+            "ring_percentage": "12.5% down to 6.25%",
+            "glow_effect": "Orange glow with subtle pulse"
+          },
+          {
+            "state": "return_now",
+            "ring_color": "#FF1744",
+            "ring_percentage": "6.25% down to 0%",
+            "glow_effect": "Strong red glow with pulsing animation",
+            "additional_effects": ["Haptic feedback every 5 minutes", "Screen keeps awake"]
+          }
+        ]
+      },
+      
+      "cruise_ship_card": {
+        "description": "Card displaying cruise ship information with photo and details",
+        "layout": {
+          "height": 220,
+          "corner_radius": 20,
+          "shadow": "0px 4px 20px rgba(0, 0, 0, 0.25)",
+          "background": "#1A2332"
+        },
+        "components": {
+          "ship_image": {
+            "height": 140,
+            "width": "100%",
+            "content_mode": "aspectFill",
+            "corner_radius": "20 (top corners only)"
+          },
+          "ship_name": {
+            "font": "Title 2 Semibold",
+            "color": "#FFFFFF",
+            "position": "Below image, 12pt padding"
+          },
+          "ship_details": {
+            "font": "Caption 1 Regular",
+            "color": "#9CA3AF",
+            "content": "Built year, capacity, gross tonnage",
+            "position": "Below ship name, 4pt spacing"
+          },
+          "cruise_line_logo": {
+            "size": 32,
+            "position": "Top right corner of image",
+            "margin": 12,
+            "background": "Frosted glass effect"
+          }
+        }
+      },
+      
+      "itinerary_row": {
+        "description": "Individual port stop row in itinerary list",
+        "height": 80,
+        "background": "rgba(26, 35, 50, 0.6)",
+        "corner_radius": 12,
+        "margin_bottom": 8,
+        "layout": {
+          "left_section": {
+            "width": "60%",
+            "components": [
+              {
+                "port_name": {
+                  "font": "Headline Semibold",
+                  "color": "#FFFFFF"
+                }
+              },
+              {
+                "arrival_time": {
+                  "font": "Callout Regular",
+                  "color": "#00D4AA",
+                  "format": "h:mm a"
+                }
+              },
+              {
+                "departure_time": {
+                  "font": "Callout Regular",
+                  "color": "#9CA3AF",
+                  "format": "h:mm a"
+                }
+              },
+              {
+                "duration_label": {
+                  "font": "Caption 1 Regular",
+                  "color": "#6B7280",
+                  "content": "At Arrival: h:mm PM"
+                }
+              }
+            ]
+          },
+          "right_section": {
+            "width": "40%",
+            "alignment": "trailing",
+            "components": [
+              {
+                "pier_badge": {
+                  "font": "Headline Semibold",
+                  "color": "#FFD54F",
+                  "background": "rgba(255, 213, 79, 0.15)",
+                  "corner_radius": 8,
+                  "padding": "8 vertical, 12 horizontal",
+                  "content": "Pier/Terminal code (e.g., A19)"
+                }
+              }
+            ]
+          }
+        },
+        "interactive_states": {
+          "default": "No highlight",
+          "pressed": "Slight scale down (0.98), slight opacity (0.9)",
+          "navigation": "Slide to port detail view"
+        }
+      },
+      
+      "route_visualization": {
+        "description": "Animated dotted line showing ship journey between ports",
+        "specifications": {
+          "line_style": "Dotted",
+          "dot_spacing": 6,
+          "dot_size": 3,
+          "color": "#FF1E8D",
+          "animation": {
+            "type": "Marching ants",
+            "speed": "Slow, continuous",
+            "direction": "Forward along route"
+          },
+          "ship_icon": {
+            "size": 24,
+            "color": "#00D4AA",
+            "style": "Top-down cruise ship silhouette",
+            "animation": "Moves along route path in real-time"
+          }
+        }
+      },
+      
+      "dynamic_island_integration": {
+        "description": "Live Activity shown in Dynamic Island during active port stop",
+        "compact_view": {
+          "leading_icon": "Ship emoji or icon",
+          "trailing_content": "Countdown timer (mm:ss)",
+          "background": "System material"
+        },
+        "expanded_view": {
+          "top_row": "Ship name and pier code",
+          "center_content": "Large countdown timer with ring",
+          "bottom_row": "Port name and urgency message",
+          "height": 160
+        },
+        "minimal_view": {
+          "content": "Countdown timer only",
+          "color": "Matches urgency state"
+        }
+      },
+      
+      "notification_styles": {
+        "port_arrival_soon": {
+          "title": "10:10 AM ROATÁN",
+          "subtitle": "Get ready to explore Roatán!",
+          "badge": "Pier code (e.g., A19)",
+          "icon": "Ship icon",
+          "timing": "1 hour before arrival",
+          "sound": "Default notification sound"
+        },
+        "departure_warning": {
+          "title": "Arriving at Port in 6h 45m",
+          "subtitle": "Get ready to explore Roatán!",
+          "badge": "Pier code",
+          "urgency": "time-sensitive",
+          "timing": "When entering warning state"
+        },
+        "departure_critical": {
+          "title": "Return to Ship NOW",
+          "subtitle": "Ship departs in 45 minutes!",
+          "badge": "Pier code with red background",
+          "urgency": "critical",
+          "interruption_level": "critical",
+          "timing": "45 minutes before departure",
+          "repeat": "Every 15 minutes until departure"
+        }
+      },
+      
+      "apple_watch_faces": {
+        "circular_complication": {
+          "styles": ["circular", "corner", "circular_large"],
+          "content": {
+            "primary": "Countdown timer",
+            "secondary": "Port code or name",
+            "color": "Urgency-based"
+          }
+        },
+        "rectangular_complication": {
+          "content": {
+            "left": "Port name",
+            "center": "Countdown timer",
+            "right": "Pier code"
+          }
+        },
+        "watch_face_display": {
+          "background": "Black",
+          "ring_display": "Full circular countdown ring",
+          "center_content": "Large timer (HH:MM:SS)",
+          "top_label": "Port name",
+          "bottom_label": "State message",
+          "tap_action": "Opens full app"
+        }
+      },
+      
+      "map_view": {
+        "description": "Interactive map showing ship position and route",
+        "specifications": {
+          "map_style": "Dark mode with ocean emphasis",
+          "ship_marker": {
+            "icon": "Top-down ship with heading indicator",
+            "size": 32,
+            "color": "#00D4AA",
+            "shadow": "Subtle drop shadow"
+          },
+          "route_line": {
+            "color": "#FF1E8D",
+            "style": "Dotted with animation",
+            "width": 3
+          },
+          "port_markers": {
+            "icon": "Location pin",
+            "size": 24,
+            "color": "#FFD54F",
+            "label": "Port name below marker"
+          },
+          "controls": {
+            "zoom": "Standard iOS map zoom controls",
+            "center_on_ship": "Floating button, bottom right",
+            "layer_toggle": "Satellite/Map switch, top right"
+          }
+        }
+      },
+      
+      "settings_panel": {
+        "style": "Grouped list with iOS standard appearance",
+        "sections": [
+          {
+            "title": "Notifications",
+            "items": [
+              "Enable Push Notifications (Toggle)",
+              "Arrival Reminders (Toggle)",
+              "Departure Warnings (Toggle)",
+              "Warning Lead Time (Picker: 1hr, 2hr, 3hr)"
+            ]
+          },
+          {
+            "title": "Display",
+            "items": [
+              "Show Ship Position (Toggle)",
+              "Animate Ocean Background (Toggle)",
+              "24-Hour Time Format (Toggle)"
+            ]
+          },
+          {
+            "title": "Apple Watch",
+            "items": [
+              "Sync to Apple Watch (Toggle)",
+              "Watch Complications (Toggle)",
+              "Haptic Alerts (Toggle)"
+            ]
+          },
+          {
+            "title": "About",
+            "items": [
+              "App Version",
+              "Database Last Updated",
+              "Privacy Policy",
+              "Terms of Service"
+            ]
+          }
+        ]
+      }
+    },
+    
+    "animations": {
+      "countdown_ring": {
+        "type": "Smooth circular progress",
+        "duration": "1 second per update",
+        "easing": "ease-in-out",
+        "effects": ["Glow pulsing in critical state", "Smooth color transitions between urgency states"]
+      },
+      "page_transitions": {
+        "type": "iOS standard navigation push/pop",
+        "duration": 0.35,
+        "curve": "ease-in-out"
+      },
+      "ocean_background": {
+        "type": "Slow vertical parallax",
+        "speed": "2px per second",
+        "direction": "Bottom to top",
+        "loop": "Seamless infinite loop"
+      },
+      "ship_movement": {
+        "type": "Smooth position interpolation",
+        "update_frequency": "Every 30 seconds",
+        "animation_duration": 2.0,
+        "easing": "linear"
+      },
+      "route_dots": {
+        "type": "Marching ants",
+        "speed": "15px per second",
+        "direction": "Along path forward"
+      }
+    },
+    
+    "interaction_patterns": {
+      "gestures": {
+        "swipe_between_ports": {
+          "direction": "Horizontal",
+          "action": "Navigate between port countdown screens",
+          "feedback": "Haptic on page change"
+        },
+        "pull_to_refresh": {
+          "action": "Refresh ship position and cruise data",
+          "indicator": "Standard iOS pull-to-refresh spinner",
+          "feedback": "Haptic on refresh start"
+        },
+        "long_press_port": {
+          "action": "Show port details quick actions",
+          "duration": 0.5,
+          "feedback": "Haptic on activation"
+        },
+        "pinch_zoom_map": {
+          "action": "Zoom in/out on map view",
+          "limits": "Constrain to reasonable geographic bounds"
+        }
+      },
+      
+      "navigation_patterns": {
+        "tab_bar": {
+          "position": "Bottom",
+          "style": "iOS standard translucent",
+          "tabs": [
+            {
+              "icon": "timer",
+              "label": "Timer",
+              "view": "Main countdown screen"
+            },
+            {
+              "icon": "map",
+              "label": "Map",
+              "view": "Ship tracking map"
+            },
+            {
+              "icon": "list.bullet",
+              "label": "Itinerary",
+              "view": "Full cruise schedule"
+            },
+            {
+              "icon": "ship",
+              "label": "My Cruises",
+              "view": "Saved cruises list"
+            }
+          ]
+        },
+        "navigation_bar": {
+          "style": "Large title when scrolled to top, inline when scrolled",
+          "background": "Translucent blur",
+          "tint_color": "#00D4AA"
+        }
+      },
+      
+      "state_feedback": {
+        "urgency_transitions": {
+          "description": "Visual and haptic feedback when urgency state changes",
+          "green_to_yellow": "Gentle haptic tap",
+          "yellow_to_orange": "Medium haptic tap",
+          "orange_to_red": "Strong haptic tap with notification",
+          "visual": "Smooth color fade over 1 second"
+        },
+        "button_presses": {
+          "visual": "Scale down to 0.95, opacity to 0.7",
+          "haptic": "Light impact",
+          "duration": 0.15
+        },
+        "loading_states": {
+          "style": "iOS standard activity indicator",
+          "color": "#00D4AA",
+          "size": "medium"
+        }
+      }
+    },
+    
+    "data_display_patterns": {
+      "time_formats": {
+        "countdown_timer": "HH:MM:SS with leading zeros",
+        "absolute_time": "h:mm a (e.g., 10:10 AM)",
+        "date": "EEE, MMM d (e.g., Mon, Dec 15)",
+        "date_with_year": "MMMM d, yyyy (e.g., December 15, 2025)"
+      },
+      
+      "distance_formats": {
+        "nautical_miles": "XXX nm",
+        "kilometers": "XXX km",
+        "miles": "XXX mi",
+        "preference": "User selectable in settings"
+      },
+      
+      "ship_statistics": {
+        "gross_tonnage": "XXX,XXX GT",
+        "passenger_capacity": "X,XXX passengers",
+        "crew": "X,XXX crew",
+        "length": "XXX m / XXX ft",
+        "beam": "XX m / XX ft",
+        "draft": "X.X m / XX ft"
+      }
+    },
+    
+    "accessibility": {
+      "voiceover_labels": {
+        "countdown_timer": "Time until departure: {hours} hours, {minutes} minutes, {seconds} seconds",
+        "urgency_state": "Status: {state_message}",
+        "port_row": "{port_name}, arriving {time}, departing {time}, pier {code}"
+      },
+      "dynamic_type": {
+        "support": "Full support for all iOS Dynamic Type sizes",
+        "minimum_scale": 0.8,
+        "maximum_scale": 1.5
+      },
+      "color_contrast": {
+        "minimum_ratio": 4.5,
+        "text_on_dark": "#FFFFFF on #0A1628 = 14.8:1",
+        "text_on_cards": "#FFFFFF on #1A2332 = 12.3:1"
+      },
+      "reduce_motion": {
+        "ocean_background": "Static gradient instead of animated",
+        "countdown_ring": "Instant updates instead of smooth animation",
+        "page_transitions": "Fade instead of slide"
+      }
+    },
+    
+    "performance_guidelines": {
+      "smooth_scrolling": {
+        "target_fps": 60,
+        "list_optimization": "Use LazyVStack for long itineraries",
+        "image_caching": "Cache ship images locally after first load"
+      },
+      "battery_optimization": {
+        "background_updates": "Update ship position every 5 minutes when in background",
+        "location_usage": "Only when map is active",
+        "animation_power": "Pause ocean animation when app in background"
+      },
+      "data_efficiency": {
+        "api_calls": "Batch requests where possible",
+        "cache_strategy": "Cache cruise data for 24 hours",
+        "update_frequency": "Ship position every 30 seconds when active, 5 minutes when backgrounded"
+      }
+    },
+    
+    "edge_cases": {
+      "no_active_cruise": {
+        "display": "Empty state with call-to-action",
+        "message": "Select a cruise to get started",
+        "action_button": "Browse Cruises"
+      },
+      "ship_departed": {
+        "display": "Gray countdown ring showing 00:00:00",
+        "message": "Ship has departed",
+        "action": "Show next port or return to cruise list"
+      },
+      "no_internet": {
+        "display": "Banner at top of screen",
+        "message": "No internet connection. Showing cached data.",
+        "countdown": "Continues with device time"
+      },
+      "timezone_handling": {
+        "strategy": "Always use ship's local time zone for each port",
+        "display": "Show timezone abbreviation when different from device"
+      }
+    },
+    
+    "screen_specifications": {
+      "main_countdown_screen": {
+        "background": "Animated ocean gradient",
+        "components": [
+          {
+            "order": 1,
+            "component": "Navigation bar with cruise name",
+            "height": 44
+          },
+          {
+            "order": 2,
+            "component": "Current state banner (e.g., 'Exploration Time')",
+            "height": 60
+          },
+          {
+            "order": 3,
+            "component": "Large countdown ring",
+            "height": 280,
+            "centered": true
+          },
+          {
+            "order": 4,
+            "component": "Port arrival/departure times",
+            "height": 100
+          },
+          {
+            "order": 5,
+            "component": "Quick actions (View Map, View Itinerary)",
+            "height": 80
+          }
+        ]
+      },
+      
+      "itinerary_screen": {
+        "header": {
+          "component": "Collapsed cruise overview card",
+          "height": 80,
+          "content": "Ship name, cruise duration, total ports"
+        },
+        "list": {
+          "component": "Scrollable list of port rows",
+          "row_height": 80,
+          "spacing": 8
+        },
+        "expanded_view": {
+          "component": "Full cruise card with ship photo",
+          "height": 220,
+          "trigger": "Tap on collapsed header"
+        }
+      },
+      
+      "map_screen": {
+        "full_screen": true,
+        "overlay_components": [
+          {
+            "component": "Ship info card",
+            "position": "Top center",
+            "height": 100,
+            "style": "Frosted glass"
+          },
+          {
+            "component": "Center on ship button",
+            "position": "Bottom right",
+            "size": 56,
+            "icon": "location.circle.fill"
+          },
+          {
+            "component": "Layer toggle",
+            "position": "Top right",
+            "size": 44,
+            "icon": "map.fill / globe"
+          }
+        ]
+      },
+      
+      "my_cruises_screen": {
+        "sections": [
+          {
+            "title": "Current Cruise",
+            "content": "Large featured card for active cruise"
+          },
+          {
+            "title": "Upcoming",
+            "content": "List of saved future cruises"
+          },
+          {
+            "title": "Past Cruises",
+            "content": "Historical cruise list",
+            "expandable": true
+          }
+        ],
+        "empty_state": {
+          "icon": "ship.fill",
+          "message": "No cruises yet",
+          "action": "Add your first cruise"
+        }
+      }
+    },
+    
+    "onboarding_flow": {
+      "screens": [
+        {
+          "order": 1,
+          "title": "Welcome to PortPal",
+          "subtitle": "Never miss your ship departure again",
+          "visual": "Animated ship and countdown ring",
+          "action": "Continue"
+        },
+        {
+          "order": 2,
+          "title": "Real-Time Tracking",
+          "subtitle": "See your ship's exact location and upcoming ports",
+          "visual": "Map with ship marker and route",
+          "action": "Continue"
+        },
+        {
+          "order": 3,
+          "title": "Smart Notifications",
+          "subtitle": "Get timely alerts as departure approaches",
+          "visual": "Notification examples",
+          "action": "Enable Notifications"
+        },
+        {
+          "order": 4,
+          "title": "Select Your Cruise",
+          "subtitle": "Find your ship to get started",
+          "visual": "Search interface",
+          "action": "Browse Cruises"
+        }
+      ]
+    }
+  }
+}
