@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum TimerState: String, Codable {
     case settingSailSoon
@@ -9,7 +10,7 @@ enum TimerState: String, Codable {
     case bonVoyage
     case untilNextTime
     case cruiseComplete
-    
+
     var displayName: String {
         switch self {
         case .settingSailSoon: return "Setting Sail Soon"
@@ -22,53 +23,72 @@ enum TimerState: String, Codable {
         case .cruiseComplete: return "Cruise Complete"
         }
     }
-    
+
     var colorTheme: TimerColorTheme {
         switch self {
         case .settingSailSoon: return .purple
-        case .allAboard: return .blue
+        case .allAboard: return .oceanTeal
         case .seasTheDay: return .cyan
-        case .landHo: return .green
-        case .explorationTime: return .orange
-        case .bonVoyage: return .pink
-        case .untilNextTime: return .red
-        case .cruiseComplete: return .gray
+        case .landHo: return .caribbeanCyan
+        case .explorationTime: return .sunsetOrange
+        case .bonVoyage: return .hotPink
+        case .untilNextTime: return .coralRed
+        case .cruiseComplete: return .steelGray
         }
     }
 }
 
 enum TimerColorTheme {
-    case purple, blue, cyan, green, orange, pink, red, gray
-    
-    var gradient: [Double] {
+    case purple
+    case oceanTeal
+    case cyan
+    case caribbeanCyan
+    case sunsetOrange
+    case hotPink
+    case coralRed
+    case steelGray
+
+    // Return Color from PortPal color palette
+    var color: Color {
         switch self {
-        case .purple: return [0.6, 0.3, 0.8]
-        case .blue: return [0.2, 0.4, 0.8]
-        case .cyan: return [0.2, 0.7, 0.9]
-        case .green: return [0.2, 0.8, 0.4]
-        case .orange: return [1.0, 0.6, 0.2]
-        case .pink: return [1.0, 0.4, 0.6]
-        case .red: return [0.9, 0.3, 0.3]
-        case .gray: return [0.5, 0.5, 0.5]
+        case .purple: return Color(red: 0.6, green: 0.3, blue: 0.8)
+        case .oceanTeal: return .oceanTeal
+        case .cyan: return Color(red: 0.2, green: 0.7, blue: 0.9)
+        case .caribbeanCyan: return .caribbeanCyan
+        case .sunsetOrange: return .sunsetOrange
+        case .hotPink: return .hotPink
+        case .coralRed: return .coralRed
+        case .steelGray: return .steelGray
         }
+    }
+
+    // Maintain backward compatibility with RGB arrays for gradient animations
+    var gradient: [Double] {
+        return color.rgbArray
     }
 }
 
 enum ExplorationUrgency {
-    case relaxed
-    case moderate
-    case urgent
-    case critical
-    
-    var color: [Double] {
+    case relaxed      // 2+ hours remaining
+    case moderate     // 30min - 2 hours
+    case urgent       // 15min - 30min
+    case critical     // <15 minutes
+
+    // Use PortPal color palette for urgency states
+    var color: Color {
         switch self {
-        case .relaxed: return [0.2, 0.8, 0.4]
-        case .moderate: return [1.0, 0.8, 0.0]
-        case .urgent: return [1.0, 0.6, 0.0]
-        case .critical: return [0.9, 0.2, 0.2]
+        case .relaxed: return .urgencyAllGood          // Caribbean Cyan (#00D4AA)
+        case .moderate: return .urgencyStayAlert       // Sunshine Yellow (#FFD54F)
+        case .urgent: return .urgencyDepartingSoon     // Sunset Orange (#FF6B35)
+        case .critical: return .urgencyReturnNow       // Coral Red (#FF1744)
         }
     }
-    
+
+    // Maintain backward compatibility with RGB arrays
+    var colorArray: [Double] {
+        return color.rgbArray
+    }
+
     var message: String {
         switch self {
         case .relaxed: return "Enjoy your time!"

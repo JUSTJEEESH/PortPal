@@ -16,16 +16,17 @@ struct CountdownRingView: View {
             ZStack {
                 Circle()
                     .stroke(Color.gray.opacity(0.1), lineWidth: 1)
-                
+
                 Circle()
                     .trim(from: 0, to: calculateProgress())
                     .stroke(
                         currentStateColor,
-                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                        style: StrokeStyle(lineWidth: 12, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
                     .animation(.easeInOut(duration: 1.5), value: currentStateColor)
                     .animation(.linear(duration: 1), value: calculateProgress())
+                    .accessibilityHidden(true) // Hide decorative ring from VoiceOver
                 
                 VStack(spacing: 18) {
                     HStack(spacing: 8) {
@@ -118,26 +119,35 @@ struct CountdownRingView: View {
             }
             .frame(height: 300)
             .padding(.horizontal, 20)
-            
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(accessibilityTimerLabel)
+            .accessibilityValue(accessibilityTimerValue)
+            .accessibilityHint("Countdown timer for ship departure")
+
             VStack(spacing: 8) {
                 Text(currentDestination)
                     .font(.system(size: 22, weight: .semibold, design: .default))
                     .foregroundColor(.primary)
-                
+                    .accessibilityLabel("Destination: \(currentDestination)")
+
                 Text(currentBerth)
                     .font(.system(size: 15, weight: .regular, design: .default))
                     .foregroundColor(.secondary)
-                
+                    .accessibilityLabel("Berth information: \(currentBerth)")
+
                 HStack(spacing: 6) {
                     Circle()
                         .fill(currentStateColor)
                         .frame(width: 8, height: 8)
-                    
+                        .accessibilityHidden(true)
+
                     Text(currentStatusText)
                         .font(.system(size: 13, weight: .semibold, design: .default))
                         .foregroundColor(currentStateColor)
                 }
                 .padding(.top, 4)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Status: \(currentStatusText)")
             }
             .frame(maxWidth: .infinity, alignment: .center)
         }
@@ -166,14 +176,14 @@ struct CountdownRingView: View {
         if stateManager.currentState == .explorationTime {
             return explorationUrgencyColor
         }
-        
-        let theme = stateManager.currentState.colorTheme.gradient
-        return Color(red: theme[0], green: theme[1], blue: theme[2])
+
+        // Use the new PortPal color palette
+        return stateManager.currentState.colorTheme.color
     }
-    
+
     private var explorationUrgencyColor: Color {
-        let urgency = stateManager.explorationUrgency.color
-        return Color(red: urgency[0], green: urgency[1], blue: urgency[2])
+        // Use the new PortPal urgency colors
+        return stateManager.explorationUrgency.color
     }
     
     private var currentStateIcon: String {
@@ -335,5 +345,23 @@ struct CountdownRingView: View {
         dateComponents.minute = minute
         
         return Calendar.current.date(from: dateComponents) ?? timer.departure
+    }
+
+    // MARK: - Accessibility
+
+    private var accessibilityTimerLabel: String {
+        "\(stateManager.currentState.displayName) countdown"
+    }
+
+    private var accessibilityTimerValue: String {
+        if displayFormat == "urgent" {
+            return "Depart now! Ship is leaving!"
+        } else if displayFormat == "days" {
+            return "\(displayDays) days and \(displayHours) hours until departure"
+        } else if displayFormat == "hours" {
+            return "\(displayHours) hours and \(displayMinutes) minutes until departure"
+        } else {
+            return "\(displayMinutes) minutes and \(displaySeconds) seconds until departure"
+        }
     }
 }
